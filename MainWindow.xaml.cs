@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+
+using ZC.TimeCalculator.Resources.Extension;
 
 namespace ZC.TimeCalculator
 {
@@ -20,7 +23,52 @@ namespace ZC.TimeCalculator
         int hSupp, mSupp;                       // Supp hours in hours and minutes separated
         int hRequired, mRequired;               // Work time required in hours and minutes separated
 
+        Regex timeFormat = new Regex("(-?)([_01][_0-9]|[_2][_0-3]):([_0-5][_0-9])");
+
         List<TextBox> textBoxes = new List<TextBox>();
+
+        private void Field_KeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+
+            e.Handled = true;
+
+            int caretPosition = textBox.CaretIndex;
+            string keyName = e.Key.ToString();
+            string keyValue = "";
+            if (e.Key.IsDigit())
+                keyValue = keyName.Substring(keyName.Length - 1, 1);
+            if (keyValue != "")
+            {
+                string time = textBox.Text.Substring(0, caretPosition) + keyValue +
+                    textBox.Text.Substring(caretPosition + 1, textBox.Text.Length - (caretPosition + 1));
+                if (timeFormat.IsMatch(time))
+                {
+                    textBox.Text = time;
+                    if (caretPosition + 1 < textBox.Text.Length)
+                    {
+                        textBox.CaretIndex = caretPosition + 1;
+                        if (textBox.Text[textBox.CaretIndex] == ':') textBox.CaretIndex++;
+                    }
+                    else FocusNextField(textBox); 
+                }
+            }
+        }
+
+        private void FocusNextField(TextBox currentTextBox)
+        {
+            // Get the event source textBox reference in the list 
+            int idx = 0;
+            foreach (TextBox item in textBoxes)
+            {
+                ++idx;
+                // If item is the event source textbox
+                if (item == currentTextBox)
+                {
+                    textBoxes[idx].Focus();
+                }
+            }
+        }
 
         /// <summary>
         /// On double-click, toggle mode between supp end time and default end time calculation
@@ -30,7 +78,7 @@ namespace ZC.TimeCalculator
         private void FieldsEnd_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // If end time was already calculated
-            if (hEnd > 0 && mEnd > 0)
+            /*if (hEnd > 0 && mEnd > 0)
             {
                 // Toggle read-only mode on textBoxes
                 txtHEnd.IsReadOnly = !txtHEnd.IsReadOnly;
@@ -54,7 +102,7 @@ namespace ZC.TimeCalculator
                     txtHEnd.Focus();
                     if (txtHEnd.Text.Length > 0) txtHEnd.SelectAll();
                 }
-            }
+            }*/
         }
 
         /// <summary>
@@ -64,7 +112,7 @@ namespace ZC.TimeCalculator
         /// <param name="e">Not used</param>
         private void FieldsEnd_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox textBox = sender as TextBox;
+            /*TextBox textBox = sender as TextBox;
 
             // If textbox is read-only
             if (textBox.IsReadOnly) return;
@@ -106,7 +154,7 @@ namespace ZC.TimeCalculator
                 // Display the results in 2 digits
                 txtHSupp.Text = hSupp.ToString("D2");
                 txtMSupp.Text = mSupp.ToString("D2");
-            }
+            }*/
         }
 
         public MainWindow()
@@ -132,7 +180,7 @@ namespace ZC.TimeCalculator
         /// <param name="e">Not used</param>
         private void FieldsWorkTime_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox textBox = sender as TextBox;
+            /*TextBox textBox = sender as TextBox;
 
             // If textbox's text length equals 2
             if (textBox.Text.Length == 2)
@@ -180,7 +228,7 @@ namespace ZC.TimeCalculator
 
                 // Start calculating end time
                 CalculateEnd();
-            }
+            }*/
         }
 
         /// <summary>
@@ -191,12 +239,12 @@ namespace ZC.TimeCalculator
         private void FieldsSupp_TextChanged(object sender, TextChangedEventArgs e)
         {
             // If end fields are read-only
-            if (txtHEnd.IsReadOnly)
+            /*if (txtHEnd.IsReadOnly)
             {
                 // If supp hours length is 2 and not negative or length is 3 and negative
                 if ((txtHSupp.Text.Length == 2 && !txtHSupp.Text.StartsWith("-")) || txtHSupp.Text.Length == 3 && txtHSupp.Text.StartsWith("-"))
                 {
-                    txtMSupp.Focus();
+                    //txtMSupp.Focus();
                 }
                 // If all the values required to calculate supp end time are sets
                 if (txtHEnd.Text.Length == 2 &&
@@ -205,7 +253,7 @@ namespace ZC.TimeCalculator
                     txtMSupp.Text.Length == 2)
                     // Start calculating supp end time
                     CalculateEndSupp();
-            }
+            }*/
         }
 
         /// <summary>
@@ -254,7 +302,7 @@ namespace ZC.TimeCalculator
 
             // Display the result in 2 digits
             txtHEnd.Text = hEnd.ToString("D2");
-            txtMEnd.Text = mEnd.ToString("D2");
+            //txtMEnd.Text = mEnd.ToString("D2");
         }
 
         /// <summary>
@@ -269,9 +317,9 @@ namespace ZC.TimeCalculator
             if (hSupp >= 1)
             {
                 // If supp hours are negatives, sets negative minutes else sets positive minutes
-                mSupp = int.Parse(txtHSupp.Text) < 0 ? int.Parse(txtMSupp.Text) * -1 : int.Parse(txtMSupp.Text);
+                //mSupp = int.Parse(txtHSupp.Text) < 0 ? int.Parse(txtMSupp.Text) * -1 : int.Parse(txtMSupp.Text);
                 // Calculates supp end time minutes
-                mSupp = int.Parse(txtMEnd.Text) - mSupp;
+               // mSupp = int.Parse(txtMEnd.Text) - mSupp;
 
                 // If supp end time minutes are lower than 0
                 if (mSupp < 0)
@@ -290,13 +338,13 @@ namespace ZC.TimeCalculator
 
                 // Display results in 2 digits
                 txtHEndSupp.Text = hSupp.ToString("D2");
-                txtMEndSupp.Text = mSupp.ToString("D2");
+                //txtMEndSupp.Text = mSupp.ToString("D2");
             }
             // Else display start time
             else
             {
                 txtHEndSupp.Text = txtHStart.Text;
-                txtMEndSupp.Text = txtMStart.Text;
+                //txtMEndSupp.Text = txtMStart.Text;
             }
         }
     }
