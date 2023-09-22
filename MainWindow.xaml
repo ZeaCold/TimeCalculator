@@ -1,12 +1,30 @@
-﻿<Window x:Class="TimeCalculator.MainWindow"
+﻿<Window x:Class="ZC.TimeCalculator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TimeCalculator"
+        xmlns:local="clr-namespace:ZC.TimeCalculator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Calculateur d'heures" Height="145" Width="425" Icon="/clock.png" ResizeMode="CanMinimize">
+    <Grid x:Name="mainGrid">
+        <Label x:Name="lblStart" Content="Arrivée" HorizontalAlignment="Left" Margin="9,10,0,0" VerticalAlignment="Top" Width="60" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+        <Label x:Name="lblStartBreak" Content="Début Pause" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
+        <TextBox x:Name="txtHStart" HorizontalAlignment="Left" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="txt_TextChanged"/>
+        <TextBox x:Name="txtMStart" HorizontalAlignment="Left" Margin="129,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="txt_TextChanged"/>
+        <TextBox x:Name="txtHStartPause" HorizontalAlignment="Left" Margin="295,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="txt_TextChanged"/>
+        <TextBox x:Name="txtMStartPause" HorizontalAlignment="Left" Margin="350,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="txt_TextChanged"/>
+        <Label x:Name="lblEndBreak" Content="Fin Pause" HorizontalAlignment="Left" Margin="9,41,0,0" VerticalAlignment="Top" Width="60" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="txtHEndPause" HorizontalAlignment="Left" Margin="74,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="txt_TextChanged"/>
+        <TextBox x:Name="txtMEndPause" HorizontalAlignment="Left" Margin="129,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="txt_TextChanged"/>
+        <Label x:Name="lblHSupp" Content="H. supp." HorizontalAlignment="Left" Margin="9,72,0,0" VerticalAlignment="Top" Width="60" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" ToolTip="Éditer l'heure de fin pour calculer les heures supplémentaires"/>
+        <TextBox x:Name="txtHTimeSupp" HorizontalAlignment="Left" Margin="74,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="txt_TextSuppChanged"/>
+        <TextBox x:Name="txtMTimeSupp" HorizontalAlignment="Left" Margin="129,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="txt_TextSuppChanged"/>
+        <Label x:Name="lblEnd" Content="Fin" HorizontalAlignment="Left" Margin="210,41,0,0" VerticalAlignment="Top" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" MouseDoubleClick="txtEnd_MouseDoubleClick" ToolTip="Double-click to allow edit"/>
+        <TextBox x:Name="txtHEnd" HorizontalAlignment="Left" Margin="295,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" MouseDoubleClick="txtEnd_MouseDoubleClick" TextChanged="txtEnd_TextChanged" ToolTip="Double-click to allow edit"/>
+        <TextBox x:Name="txtMEnd" HorizontalAlignment="Left" Margin="350,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" MouseDoubleClick="txtEnd_MouseDoubleClick" TextChanged="txtEnd_TextChanged" ToolTip="Double-click to allow edit"/>
+        <Label x:Name="lblEndSupp" Content="Fin (supp.)" HorizontalAlignment="Left" Margin="210,72,0,0" VerticalAlignment="Top" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
+        <TextBox x:Name="txtHEndv2" HorizontalAlignment="Left" Margin="295,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox x:Name="txtMEndv2" HorizontalAlignment="Left" Margin="350,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+
     </Grid>
 </Window>

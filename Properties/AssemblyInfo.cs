@@ -8,9 +8,9 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TimeCalculator")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Time Calculator is an app for PC that help calculate hours at work")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("ZeaCold")]
 [assembly: AssemblyProduct("TimeCalculator")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
