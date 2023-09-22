@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,11 +21,15 @@ namespace ZC.TimeCalculator
     /// </summary>
     public partial class MainWindow : Window
     {
+        const int M_IN_H = 60;                  // Constant value of minutes in an hour
+        const int H_IN_D = 24;                  // Constant value of minutes in a day
+
         int hStart, mStart;                     // Start time in hours and minutes separated
         int hEnd, mEnd;                         // End time in hours and minutes separated
         int hStartBreak, mStartBreak;           // Start break time in hours and minutes separated
         int hEndBreak, mEndBreak;               // End break time in hours and minutes separated
         int hSupp, mSupp;                       // Supp hours in hours and minutes separated
+        int hRequired, mRequired;               // Work time required in hours and minutes separated
 
         List<TextBox> textBoxes = new List<TextBox>();
 
@@ -99,14 +104,14 @@ namespace ZC.TimeCalculator
                 {
                     // Transform negative supp minutes into supp hours
                     hSupp--;
-                    mSupp = 60 + mSupp;
+                    mSupp = M_IN_H + mSupp;
                 }
-                // If delta of minutes is over 60
-                else if (mSupp > 60)
+                // If delta of minutes is over an hour
+                else if (mSupp > M_IN_H)
                 {
-                    // Transform over 60 supp minutes into supp hours
+                    // Transform over an hour supp minutes into supp hours
                     hSupp++;
-                    mSupp -= 60;
+                    mSupp -= M_IN_H;
                 }
 
                 // Display the results in 2 digits
@@ -119,17 +124,16 @@ namespace ZC.TimeCalculator
         {
             InitializeComponent();
 
+            hRequired = 8;
+            mRequired = 24;
+
             // Start the app with a focus on the start field
             txtHStart.Focus();
             
             // Get all the references of textboxes of the app into a list
             foreach (var item in mainGrid.Children)
-            {
                 if (item.GetType() == txtHStart.GetType())
-                {
                     textBoxes.Add(item as TextBox);
-                }
-            }
         }
 
         /// <summary>
@@ -148,7 +152,7 @@ namespace ZC.TimeCalculator
                 if (int.Parse(textBox.Text) >= 0)
                 {
                     // If textbox's name start with H and its text is lower than 24 or its name starts with M and its text is lower than 60
-                    if (int.Parse(textBox.Text) < 24 && textBox.Name.Contains("H") || int.Parse(textBox.Text) < 60 && textBox.Name.Contains("M"))
+                    if (int.Parse(textBox.Text) < H_IN_D && textBox.Name.Contains("H") || int.Parse(textBox.Text) < M_IN_H && textBox.Name.Contains("M"))
                     {
                         // Get the event source textBox reference in the list 
                         int idx = 0;
@@ -160,29 +164,18 @@ namespace ZC.TimeCalculator
                             {
                                 textBoxes[idx].Focus();
                                 if (textBoxes[idx].Text.Length > 0)
-                                {
                                     textBoxes[idx].SelectAll();
-                                }
                             }
                         }
                     }
                     // Else reset its text
-                    else
-                    {
-                        textBox.Text = "";
-                    }
+                    else textBox.Text = "";
                 }
                 // Else reset its text
-                else
-                {
-                    textBox.Text = "";
-                }
+                else textBox.Text = "";
             }
             // Else if textbox's text length is over 2
-            else if (textBox.Text.Length > 2)
-            {
-                textBox.Text = textBox.Text.Substring(0, 2);
-            }
+            else if (textBox.Text.Length > 2) textBox.Text = textBox.Text.Substring(0, 2);
 
             // If all the field required to calculate end time are sets
             if (txtHStart.Text.Length == 2 && txtHStartPause.Text.Length == 2 && txtHEndPause.Text.Length == 2 &&
@@ -221,10 +214,8 @@ namespace ZC.TimeCalculator
                     ((txtHSupp.Text.Length == 2 && !txtHSupp.Text.StartsWith("-")) ||
                     (txtHSupp.Text.Length == 3 && txtHSupp.Text.StartsWith("-"))) &&
                     txtMSupp.Text.Length == 2)
-                {
                     // Start calculating supp end time
                     calculateHEndSupp();
-                }
             }
         }
 
@@ -243,43 +234,34 @@ namespace ZC.TimeCalculator
             {
                 // Remove an hour and adapt minutes in consequence
                 --hMorning;
-                mMorning = 60 - mStart + mStartBreak;
+                mMorning = M_IN_H - mStart + mStartBreak;
             }
             // Else basic calculation
-            else
-            {
-                mMorning = mStartBreak - mStart;
-            }
+            else mMorning = mStartBreak - mStart;
 
             // Hours remaining to finish the day
-            hRemaining = 8 - hMorning;
+            hRemaining = hRequired - hMorning;
             // If minutes dones are lower than required
-            if (mMorning < 24)
+            if (mMorning < mRequired)
             {
                 // Remove an hour and adapt minutes in consequence
                 --hRemaining;
-                mRemaining = 60 - mMorning + 24;
+                mRemaining = M_IN_H - mMorning + mRequired;
             }
             // Else basic calculation
-            else
-            {
-                mRemaining = 24 - mMorning;
-            }
+            else mRemaining = mRequired - mMorning;
 
             // Calculate the end hour
             hEnd = hEndBreak + hRemaining;
             // If sum of minutes remaining and minutes of the end break time are higher than 60
-            if (mRemaining + mEndBreak > 60)
+            if (mRemaining + mEndBreak > M_IN_H)
             {
                 // Add an hor and adapt minutes in consequence
                 ++hEnd;
-                mEnd = mRemaining + mEndBreak - 60;
+                mEnd = mRemaining + mEndBreak - M_IN_H;
             }
             // Else basic calculation
-            else
-            {
-                mEnd = mRemaining + mEndBreak;
-            }
+            else mEnd = mRemaining + mEndBreak;
 
             // Display the result in 2 digits
             txtHEnd.Text = hEnd.ToString("D2");
@@ -307,14 +289,14 @@ namespace ZC.TimeCalculator
                 {
                     // Remove an hour and adapt minutes in consequence
                     --hSupp;
-                    mSupp = 60 + mSupp;
+                    mSupp = M_IN_H + mSupp;
                 }
-                // Else if supp end time minutes are higher than 60
-                else if (mSupp >= 60)
+                // Else if supp end time minutes are higher than an hour
+                else if (mSupp >= M_IN_H)
                 {
                     // Add an hour and adapt minutes in consequences
                     ++hSupp;
-                    mSupp -= 60;
+                    mSupp -= M_IN_H;
                 }
 
                 // Display results in 2 digits
