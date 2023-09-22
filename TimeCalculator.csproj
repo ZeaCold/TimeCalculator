@@ -37,6 +37,9 @@
   <PropertyGroup>
     <ApplicationIcon>clock.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TimeCalculator.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
