@@ -14,7 +14,7 @@ namespace ZC.TimeCalculator
     public partial class MainWindow : Window
     {
         const int M_In_H = 60;                              // Constant value of minutes in an hour
-        const string DefaultText = "__/__";                 // Constant value of the default text
+        const string DefaultText = "__:__";                 // Constant value of the default text
 
         int[] timeStart = new int[2];                       // Start time in hours and minutes separated
         int[] timeEnd = new int[2];                         // End time in hours and minutes separated
@@ -137,10 +137,10 @@ namespace ZC.TimeCalculator
         /// </summary>
         /// <param name="sender">Not used</param>
         /// <param name="e">Not used</param>
-        private void FieldsEnd_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void FieldEnd_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // If end time was already calculated
-            if (timeEnd[0] > 0 && timeEnd[1] > 0)
+            if (timeFinishedFormat.IsMatch(txtTimeEnd.Text))
             {
                 // Toggle read-only mode on textBoxes
                 txtTimeEnd.IsReadOnly = !txtTimeEnd.IsReadOnly;
@@ -174,6 +174,8 @@ namespace ZC.TimeCalculator
             {
                 TextBox textBox = sender as TextBox;
 
+                bool isNegativeBut0Hour = false;
+
                 // If textbox is read-only
                 if (textBox.IsReadOnly) return;
 
@@ -188,20 +190,28 @@ namespace ZC.TimeCalculator
                     // If delta of minutes is negative
                     if (timeSupp[1] < 0)
                     {
-                        // Transform negative supp minutes into supp hours
-                        timeSupp[0]--;
-                        timeSupp[1] = M_In_H + timeSupp[1];
+                        if (timeSupp[0] != 0)
+                        {
+                            // Transform negative supp hour minutes into supp hours
+                            timeSupp[0]--;
+                            timeSupp[1] += M_In_H;
+                        }
+                        else
+                        {
+                            isNegativeBut0Hour = true;
+                        }
+                        timeSupp[1] *= -1;
                     }
                     // If delta of minutes is over an hour
                     else if (timeSupp[1] > M_In_H)
                     {
-                        // Transform over an hour supp minutes into supp hours
+                        // Transform over hour supp minutes into supp hours
                         timeSupp[0]++;
                         timeSupp[1] -= M_In_H;
                     }
 
                     // Display the results in 2 digits
-                    txtTimeSupp.Text = timeSupp[0].ToString("D2") + ":" + timeSupp[1].ToString("D2");
+                    txtTimeSupp.Text = (isNegativeBut0Hour ? "-" : "") + timeSupp[0].ToString("D2") + ":" + timeSupp[1].ToString("D2");
                 } 
             }
         }

@@ -113,8 +113,8 @@
             HorizontalContentAlignment="Right"
             VerticalContentAlignment="Center"
             Content="Fin"
-            MouseDoubleClick="FieldsEnd_MouseDoubleClick"
-            ToolTip="Double-click to allow edit" />
+            MouseDoubleClick="FieldEnd_MouseDoubleClick"
+            ToolTip="Double-click to toggle edit" />
         <TextBox
             x:Name="txtTimeEnd"
             Width="105"
@@ -127,11 +127,11 @@
             FontFamily="Arial"
             FontSize="16"
             IsReadOnly="True"
-            MouseDoubleClick="FieldsEnd_MouseDoubleClick"
+            MouseDoubleClick="FieldEnd_MouseDoubleClick"
             Text="__:__"
             TextChanged="FieldsEnd_TextChanged"
             TextWrapping="Wrap"
-            ToolTip="Double-click to allow edit" PreviewKeyDown="Field_PreviewKeyDown" />
+            ToolTip="Double-click to toggle edit" PreviewKeyDown="Field_PreviewKeyDown" />
         <Label
             x:Name="lblHSupp"
             Width="60"
