@@ -55,6 +55,55 @@ namespace ZC.TimeCalculator
             }
         }
 
+        private void Field_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+
+            e.Handled = true;
+
+            int caretPosition = textBox.CaretIndex;
+
+            string keyName = e.Key.ToString();
+            string keyValue = "";
+            if (e.Key.IsDigit())
+            {
+                keyValue = keyName.Substring(keyName.Length - 1, 1);
+                if (textBox.Text[caretPosition] == ':') caretPosition++;
+            }
+            else if (caretPosition > 0 && e.Key == Key.Back)
+            {
+                keyValue = "_";
+                caretPosition--;
+                if (textBox.Text[caretPosition] == ':') caretPosition--;
+            }
+            else if (e.Key == Key.Left)
+                textBox.CaretIndex = caretPosition - 1;
+            else if (e.Key == Key.Right)
+                textBox.CaretIndex = caretPosition + 1;
+
+            if (keyValue != "")
+            {
+                string time = textBox.Text.Substring(0, caretPosition) + keyValue +
+                    textBox.Text.Substring(caretPosition + 1, textBox.Text.Length - (caretPosition + 1));
+                if (timeFormat.IsMatch(time))
+                {
+                    textBox.Text = time;
+                    if (keyValue == "_")
+                    {
+                        //if (caretPosition > 0) textBox.CaretIndex = caretPosition - 1;
+                        if (caretPosition > 0 && textBox.Text[caretPosition - 1] == ':') textBox.CaretIndex = caretPosition - 1;
+                        else textBox.CaretIndex = caretPosition;
+                    }
+                    else if (caretPosition + 1 < textBox.Text.Length)
+                    {
+                        textBox.CaretIndex = caretPosition + 1;
+                        if (textBox.Text[textBox.CaretIndex] == ':') textBox.CaretIndex = textBox.CaretIndex + 1;
+                    }
+                    else FocusNextField(textBox);
+                }
+            }
+        }
+
         private void FocusNextField(TextBox currentTextBox)
         {
             // Get the event source textBox reference in the list 

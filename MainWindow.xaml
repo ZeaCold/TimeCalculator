@@ -41,10 +41,9 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
-            KeyDown="Field_KeyDown"
             Text="__:__"
             TextChanged="FieldsWorkTime_TextChanged"
-            TextWrapping="Wrap" />
+            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
         <TextBox
             x:Name="txtHStartPause"
             Width="105"
@@ -56,10 +55,9 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
-            KeyDown="Field_KeyDown"
             Text="__:__"
             TextChanged="FieldsWorkTime_TextChanged"
-            TextWrapping="Wrap" />
+            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
         <Label
             x:Name="lblEndBreak"
             Width="60"
@@ -80,10 +78,9 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
-            KeyDown="Field_KeyDown"
             Text="__:__"
             TextChanged="FieldsWorkTime_TextChanged"
-            TextWrapping="Wrap" />
+            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
         <Label
             x:Name="lblHSupp"
             Width="60"
@@ -105,10 +102,9 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
-            KeyDown="Field_KeyDown"
             Text="__:__"
             TextChanged="FieldsSupp_TextChanged"
-            TextWrapping="Wrap" />
+            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
         <Label
             x:Name="lblEnd"
             Width="80"
@@ -132,12 +128,11 @@
             FontFamily="Arial"
             FontSize="16"
             IsReadOnly="True"
-            KeyDown="Field_KeyDown"
             MouseDoubleClick="FieldsEnd_MouseDoubleClick"
             Text="__:__"
             TextChanged="FieldsEnd_TextChanged"
             TextWrapping="Wrap"
-            ToolTip="Double-click to allow edit" />
+            ToolTip="Double-click to allow edit" PreviewKeyDown="Field_PreviewKeyDown" />
         <Label
             x:Name="lblEndSupp"
             Width="80"
@@ -159,9 +154,8 @@
             FontFamily="Arial"
             FontSize="16"
             IsReadOnly="True"
-            KeyDown="Field_KeyDown"
             Text="__:__"
-            TextWrapping="Wrap" />
+            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
 
     </Grid>
 </Window>
