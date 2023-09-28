@@ -62,6 +62,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Resources\Extension\KeyExtension.cs" />
+    <Compile Include="Resources\Extension\TextBoxExtension.cs" />
+    <Compile Include="Resources\Utils\TimeUtils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
