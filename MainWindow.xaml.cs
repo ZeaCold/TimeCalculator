@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
 using ZC.TimeCalculator.Resources.Extension;
 
 namespace ZC.TimeCalculator
@@ -13,8 +12,9 @@ namespace ZC.TimeCalculator
     /// </summary>
     public partial class MainWindow : Window
     {
-        const int M_In_H = 60;                              // Constant value of minutes in an hour
-        const string DefaultText = "__:__";                 // Constant value of the default text
+        const int M_IN_H = 60;                              // Constant value of minutes in an hour
+        const int H_IN_D = 24;                              // Constant value of hours in a day
+        const string DEFAULT_TEXT = "__:__";                // Constant value of the default text
 
         int[] timeStart = new int[2];                       // Start time in hours and minutes separated
         int[] timeEnd = new int[2];                         // End time in hours and minutes separated
@@ -41,7 +41,7 @@ namespace ZC.TimeCalculator
         {
             TextBox textBox = sender as TextBox;
 
-            // marque l'évènement comme géré
+            // Tag the event as handled
             e.Handled = true;
 
             // Defines the minimum limit of the caret index
@@ -211,8 +211,8 @@ namespace ZC.TimeCalculator
                 timeRequired[1] = int.Parse(fieldRequired[1]);
 
                 // If the components are initialized and every textbox's text matches the finished time format
-                if (componentInitialized && timeFinishedFormat.IsMatch(txtTimeStart.Text) && 
-                    timeFinishedFormat.IsMatch(txtTimeStartPause.Text) && 
+                if (componentInitialized && timeFinishedFormat.IsMatch(txtTimeStart.Text) &&
+                    timeFinishedFormat.IsMatch(txtTimeStartPause.Text) &&
                     timeFinishedFormat.IsMatch(txtTimeEndPause.Text))
                     // Calculate the new end time
                     CalculateEnd();
@@ -238,7 +238,7 @@ namespace ZC.TimeCalculator
                     // Reset end time values to the calculated ones and h.supp to none
                     txtTimeEnd.Text = timeEnd[0].ToString("D2") + ":" + timeEnd[1].ToString("D2");
 
-                    txtTimeSupp.Text = DefaultText;
+                    txtTimeSupp.Text = DEFAULT_TEXT;
 
                     txtTimeSupp.Focus();
                 }
@@ -282,7 +282,7 @@ namespace ZC.TimeCalculator
                         {
                             // Transform negative supp hour minutes into supp hours
                             timeSupp[0]--;
-                            timeSupp[1] += M_In_H;
+                            timeSupp[1] += M_IN_H;
                         }
                         // Else assign true to the 0 hours negative flag
                         else isNegativeBut0Hour = true;
@@ -291,16 +291,16 @@ namespace ZC.TimeCalculator
                         timeSupp[1] *= -1;
                     }
                     // If delta of minutes is over an hour
-                    else if (timeSupp[1] > M_In_H)
+                    else if (timeSupp[1] > M_IN_H)
                     {
                         // Transform over hour supp minutes into supp hours
                         timeSupp[0]++;
-                        timeSupp[1] -= M_In_H;
+                        timeSupp[1] -= M_IN_H;
                     }
 
                     // Display the results in 2 digits
                     txtTimeSupp.Text = (isNegativeBut0Hour ? "-" : "") + timeSupp[0].ToString("D2") + ":" + timeSupp[1].ToString("D2");
-                } 
+                }
             }
         }
 
@@ -315,7 +315,7 @@ namespace ZC.TimeCalculator
 
             // Start the app with a focus on the start field
             txtTimeStart.Focus();
-            
+
             // Get all the references of textboxes of the app into a list
             foreach (var item in mainGrid.Children)
                 // If the item type is of the TextBox type
@@ -353,7 +353,7 @@ namespace ZC.TimeCalculator
 
                     // Start calculating end time
                     CalculateEnd();
-                } 
+                }
             }
         }
 
@@ -374,7 +374,7 @@ namespace ZC.TimeCalculator
                     if (timeFinishedFormat.IsMatch(txtTimeEnd.Text) && timeFinishedFormat.IsMatch(txtTimeSupp.Text))
                         // Start calculating supp end time
                         CalculateEndSupp();
-                } 
+                }
             }
         }
 
@@ -394,7 +394,7 @@ namespace ZC.TimeCalculator
             {
                 // Tranform negative minutes in a negative hour and positive minutes
                 timeMorning[0]--;
-                timeMorning[1] += M_In_H;
+                timeMorning[1] += M_IN_H;
             }
 
             // Delta of hours and minutes remaining
@@ -405,10 +405,10 @@ namespace ZC.TimeCalculator
             {
                 // Transform negative minutes in a negative hour and positive minutes
                 timeRemaining[0]--;
-                timeRemaining[1] += M_In_H;
+                timeRemaining[1] += M_IN_H;
             }
 
-            // Add remaining hours and minutes to the end break time
+            // Add remaining time to the end break time
             timeEnd[0] = timeEndBreak[0] + timeRemaining[0];
             timeEnd[1] = timeEndBreak[1] + timeRemaining[1];
             // While end minutes are higher than an hour
@@ -416,8 +416,11 @@ namespace ZC.TimeCalculator
             {
                 // Transform 60 minutes into an hour
                 timeEnd[0]++;
-                timeEnd[1] -= M_In_H;
+                timeEnd[1] -= M_IN_H;
             }
+
+            // If end time is higher than 24 hours
+            if (timeEnd[0] >= H_IN_D) timeEnd[0] -= H_IN_D;
 
             // Display the result in 2 digits
             txtTimeEnd.Text = timeEnd[0].ToString("D2") + ":" + timeEnd[1].ToString("D2");
@@ -435,30 +438,33 @@ namespace ZC.TimeCalculator
             timeSupp[1] = int.Parse(fieldSupp[1]);
 
             // If supp time is higher or equal to required time, display start time as supp end time
-            if (timeSupp[0] > timeRequired[0] || (timeSupp[0] == timeRequired[0] && timeSupp[1] == timeRequired[0])) 
+            if (timeSupp[0] > timeRequired[0] || (timeSupp[0] == timeRequired[0] && timeSupp[1] == timeRequired[0]))
                 txtTimeEndSupp.Text = txtTimeStart.Text;
             else
             {
                 // If supp hours are negatives, sets negative minutes else sets positive minutes
                 timeSupp[1] = int.Parse(fieldSupp[0]) < 0 ? int.Parse(fieldSupp[1]) * -1 : int.Parse(fieldSupp[1]);
 
-                // End time plus supp time
+                // End time minus supp time
                 timeEndSupp[0] = timeEnd[0] - timeSupp[0];
                 timeEndSupp[1] = timeEnd[1] - timeSupp[1];
                 // While end supp minutes are higher than an hour
-                while (timeEndSupp[1] > M_In_H)
+                while (timeEndSupp[1] > M_IN_H)
                 {
                     // Transform the hour minutes in an hour
                     timeEndSupp[0]++;
-                    timeEndSupp[1] -= M_In_H;
+                    timeEndSupp[1] -= M_IN_H;
                 }
                 // While end supp minutes are negative
                 while (timeEndSupp[1] < 0)
                 {
                     // Transform the negative minutes in a negative hour
                     timeEndSupp[0]--;
-                    timeEndSupp[1] += M_In_H;
+                    timeEndSupp[1] += M_IN_H;
                 }
+
+                // If end time hours are lower than 0, add 23 to it
+                if (timeEndSupp[0] < 0) timeEndSupp[0] += H_IN_D;
 
                 // Display the supp end time
                 txtTimeEndSupp.Text = timeEndSupp[0].ToString("D2") + ":" + timeEndSupp[1].ToString("D2");
