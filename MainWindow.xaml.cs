@@ -12,7 +12,6 @@ namespace ZC.TimeCalculator
     /// </summary>
     public partial class MainWindow : Window
     {
-        const int M_IN_H = 60;                              // Constant value of minutes in an hour
         const string DEFAULT_TEXT = "__:__";                // Constant value of the default text
 
         int[] timeStart = new int[2];                       // Start time in hours and minutes separated
@@ -25,7 +24,6 @@ namespace ZC.TimeCalculator
 
         bool componentInitialized = false;                  // Contains if the components are already initialized
 
-        Regex timeFormat = new Regex("(-?)([_01][_0-9]|[_2][_0-3]):([_0-5][_0-9])");        // Regex for the default time format
         Regex timeFinishedFormat = new Regex("(-?)([01][0-9]|2[0-3]):([0-5][0-9])");        // Regex for the date format when entierly written
 
         List<TextBox> textBoxes = new List<TextBox>();              // List of all textboxes in the app
@@ -125,7 +123,7 @@ namespace ZC.TimeCalculator
                     timeSuppUser[0] = int.Parse(endTime[0]);
                     timeSuppUser[1] = int.Parse(endTime[1]);
 
-                    (int[] timeSupp, bool isNegativeBut0Hour) suppTime = TimeUtils.calculateSuppTime(timeSuppUser, timeEnd);
+                    (int[] timeSupp, bool isNegativeBut0Hour) suppTime = TimeUtils.CalculateSuppTime(timeSuppUser, timeEnd);
 
                     // Display the results in 2 digits
                     txtTimeSupp.Text = (suppTime.isNegativeBut0Hour ? "-" : "") + suppTime.timeSupp[0].ToString("D2") + ":" + suppTime.timeSupp[1].ToString("D2");

@@ -181,6 +181,12 @@ namespace ZC.TimeCalculator.Resources.Utils
 
             // Add remaining time to the end break time
             timeEnd[0] = timeEndBreak[0] + timeRemaining[0];
+
+            // If the hours calculated are more than a day
+            if (timeEnd[0] > HOURS_IN_DAY)
+                // Remove the 24 hours to make a correct time
+                timeEnd[0] -= HOURS_IN_DAY;
+
             timeEnd[1] = timeEndBreak[1] + timeRemaining[1];
             // While end minutes are higher than an hour
             while (timeEnd[1] >= 60)
@@ -247,7 +253,7 @@ namespace ZC.TimeCalculator.Resources.Utils
         /// <param name="timeEndUser">End time entered by the user</param>
         /// <param name="timeEndCalculated">End time calculated</param>
         /// <returns>Returns a tuple with the supp time and a flag if the hours are negative but equals to 0</returns>
-        public static (int[] timeSupp, bool isNegativeBut0Hour) calculateSuppTime(int[] timeEndUser, int[] timeEndCalculated)
+        public static (int[] timeSupp, bool isNegativeBut0Hour) CalculateSuppTime(int[] timeEndUser, int[] timeEndCalculated)
         {
             int[] timeSupp = new int[2];
             bool isNegativeBut0Hour = false;

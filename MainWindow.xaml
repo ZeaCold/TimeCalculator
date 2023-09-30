@@ -20,7 +20,7 @@
             VerticalAlignment="Top"
             HorizontalContentAlignment="Right"
             VerticalContentAlignment="Center"
-            Content="Required" />
+            Content="Requis" />
         <TextBox
             x:Name="txtTimeRequired"
             Width="105"
@@ -32,9 +32,10 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
             Text="08:24"
             TextChanged="FieldTimeRequired_TextChanged"
-            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
+            TextWrapping="Wrap" />
         <Label
             x:Name="lblStart"
             Width="60"
@@ -55,9 +56,10 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
             Text="__:__"
             TextChanged="FieldsWorkTime_TextChanged"
-            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
+            TextWrapping="Wrap" />
         <Label
             x:Name="lblStartBreak"
             Width="80"
@@ -78,9 +80,10 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
             Text="__:__"
             TextChanged="FieldsWorkTime_TextChanged"
-            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
+            TextWrapping="Wrap" />
         <Label
             x:Name="lblEndBreak"
             Width="60"
@@ -101,9 +104,10 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
             Text="__:__"
             TextChanged="FieldsWorkTime_TextChanged"
-            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
+            TextWrapping="Wrap" />
         <Label
             x:Name="lblEnd"
             Width="80"
@@ -128,10 +132,11 @@
             FontSize="16"
             IsReadOnly="True"
             MouseDoubleClick="FieldEnd_MouseDoubleClick"
+            PreviewKeyDown="Field_PreviewKeyDown"
             Text="__:__"
             TextChanged="FieldsEnd_TextChanged"
             TextWrapping="Wrap"
-            ToolTip="Double-click to toggle edit" PreviewKeyDown="Field_PreviewKeyDown" />
+            ToolTip="Double-click to toggle edit" />
         <Label
             x:Name="lblHSupp"
             Width="60"
@@ -153,9 +158,10 @@
             VerticalContentAlignment="Center"
             FontFamily="Arial"
             FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
             Text="__:__"
             TextChanged="FieldsSupp_TextChanged"
-            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
+            TextWrapping="Wrap" />
         <Label
             x:Name="lblEndSupp"
             Width="80"
@@ -177,8 +183,9 @@
             FontFamily="Arial"
             FontSize="16"
             IsReadOnly="True"
+            PreviewKeyDown="Field_PreviewKeyDown"
             Text="__:__"
-            TextWrapping="Wrap" PreviewKeyDown="Field_PreviewKeyDown" />
+            TextWrapping="Wrap" />
 
     </Grid>
 </Window>
