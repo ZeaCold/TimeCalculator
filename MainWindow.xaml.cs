@@ -18,7 +18,7 @@ namespace ZC.TimeCalculator
         int[] timeEnd = new int[2];                         // End time in hours and minutes separated
         int[] timeStartBreak = new int[2];                  // Start break time in hours and minutes separated
         int[] timeEndBreak = new int[2];                    // End break time in hours and minutes separated
-        int[] timeSupp = new int[2];                        // Supp hours in hours and minutes separated
+        int[] timeSupp = new int[3];                        // Supp hours in hours and minutes separated
         int[] timeEndSupp = new int[2];                     // End time calculated with supp time
         int[] timeRequired = new int[2];                    // Work time required in hours and minutes separated
 
@@ -208,6 +208,7 @@ namespace ZC.TimeCalculator
 
                         timeSupp[0] = int.Parse(fieldSupp[0]);
                         timeSupp[1] = int.Parse(fieldSupp[1]);
+                        timeSupp[2] = txtTimeSupp.Text.StartsWith("-") ? 1 : 0;
 
                         // Start calculating supp end time
                         timeEndSupp = TimeUtils.CalculateEndSupp(timeRequired, timeStart, timeEnd, timeSupp);

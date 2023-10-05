@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,6 +11,7 @@ namespace ZC.TimeCalculator.Resources.Utils
     {
         public const int MINUTES_IN_HOUR = 60;                                                          // Constant value of minutes in an hour
         public const int HOURS_IN_DAY = 24;                                                             // Constant value of hours in a day
+        public const int MINUTES_IN_DAY = MINUTES_IN_HOUR * HOURS_IN_DAY;
 
         public static Regex timeFormat = new Regex("(-?)([_01][_0-9]|[_2][_0-3]):([_0-5][_0-9])");      // Regex for the default time format
         public static Regex timeFinishedFormat = new Regex("(-?)([01][0-9]|2[0-3]):([0-5][0-9])");      // Regex for the date format when entierly written
@@ -153,51 +155,39 @@ namespace ZC.TimeCalculator.Resources.Utils
         /// <returns>Return a table of end time with the hours and minutes separated</returns>
         public static int[] CalculateEnd(int[] timeRequired, int[] timeStart, int[] timeStartBreak, int[] timeEndBreak)
         {
-            int[] timeRemaining = new int[2];               // Remaining time in hours and minutes separated
-            int[] timeMorning = new int[2];                 // Time done in the morning in hours and minutes separated
             int[] timeEnd = new int[2];                     // End time in hours and minutes separated
 
-            // Delta of hours and minutes done in the morning
-            timeMorning[0] = timeStartBreak[0] - timeStart[0];
-            timeMorning[1] = timeStartBreak[1] - timeStart[1];
-            // If delta of minutes is negative
-            if (timeMorning[1] < 0)
+            int minutesRequired = timeRequired[0] * 60 + timeRequired[1];
+            int minutesStart = timeStart[0] * 60 + timeStart[1];
+            int minutesStartBreak = timeStartBreak[0] * 60 + timeStartBreak[1];
+
+            int minutesMinimumEnd = minutesRequired + minutesStart;
+            if (minutesMinimumEnd >= MINUTES_IN_DAY) minutesMinimumEnd -= MINUTES_IN_DAY;
+            if (minutesMinimumEnd < minutesStartBreak)
             {
-                // Tranform negative minutes in a negative hour and positive minutes
-                timeMorning[0]--;
-                timeMorning[1] += MINUTES_IN_HOUR;
+                while (minutesMinimumEnd >= 60)
+                {
+                    minutesMinimumEnd -= 60;
+                    timeEnd[0]++;
+                }
+                if (timeEnd[0] >= 24) timeEnd[0] -= 24;
+                timeEnd[1] = minutesMinimumEnd;
+                return timeEnd;
             }
 
-            // Delta of hours and minutes remaining
-            timeRemaining[0] = timeRequired[0] - timeMorning[0];
-            timeRemaining[1] = timeRequired[1] - timeMorning[1];
-            // If delta of minutes is negative
-            if (timeRemaining[1] < 0)
+            int minutesEndBreak = timeEndBreak[0] * 60 + timeEndBreak[1];
+
+            int minutesMorning = minutesStartBreak - minutesStart;
+            int minutesRemaining = minutesRequired - minutesMorning;
+            int minutesEnd = minutesEndBreak + minutesRemaining;
+
+            while (minutesEnd >= 60)
             {
-                // Transform negative minutes in a negative hour and positive minutes
-                timeRemaining[0]--;
-                timeRemaining[1] += MINUTES_IN_HOUR;
-            }
-
-            // Add remaining time to the end break time
-            timeEnd[0] = timeEndBreak[0] + timeRemaining[0];
-
-            // If the hours calculated are more than a day
-            if (timeEnd[0] > HOURS_IN_DAY)
-                // Remove the 24 hours to make a correct time
-                timeEnd[0] -= HOURS_IN_DAY;
-
-            timeEnd[1] = timeEndBreak[1] + timeRemaining[1];
-            // While end minutes are higher than an hour
-            while (timeEnd[1] >= 60)
-            {
-                // Transform 60 minutes into an hour
+                minutesEnd -= 60;
                 timeEnd[0]++;
-                timeEnd[1] -= MINUTES_IN_HOUR;
             }
-
-            // If end time is higher than 24 hours
-            if (timeEnd[0] >= HOURS_IN_DAY) timeEnd[0] -= HOURS_IN_DAY;
+            if (timeEnd[0] >= 24) timeEnd[0] -= 24;
+            timeEnd[1] = minutesEnd;
 
             return timeEnd;
         }
@@ -219,29 +209,18 @@ namespace ZC.TimeCalculator.Resources.Utils
                 timeEndSupp = timeStart;
             else
             {
-                // If supp hours are negatives, sets negative minutes else sets positive minutes
-                timeSupp[1] = timeSupp[0] < 0 ? timeSupp[1] * -1 : timeSupp[1];
+                int minutesSupp = timeSupp[0] * 60 + (timeSupp[2] == 1 ? timeSupp[1] * -1 : timeSupp[1]);
+                int minutesEnd = timeEnd[0] * 60 + timeEnd[1];
 
-                // End time minus supp time
-                timeEndSupp[0] = timeEnd[0] - timeSupp[0];
-                timeEndSupp[1] = timeEnd[1] - timeSupp[1];
-                // While end supp minutes are higher than an hour
-                while (timeEndSupp[1] > MINUTES_IN_HOUR)
+                int minutesEndSupp = minutesEnd - minutesSupp;
+
+                while (minutesEndSupp >= 60)
                 {
-                    // Transform the hour minutes in an hour
+                    minutesEndSupp -= 60;
                     timeEndSupp[0]++;
-                    timeEndSupp[1] -= MINUTES_IN_HOUR;
                 }
-                // While end supp minutes are negative
-                while (timeEndSupp[1] < 0)
-                {
-                    // Transform the negative minutes in a negative hour
-                    timeEndSupp[0]--;
-                    timeEndSupp[1] += MINUTES_IN_HOUR;
-                }
-
-                // If end time hours are lower than 0, add 23 to it
-                if (timeEndSupp[0] < 0) timeEndSupp[0] += HOURS_IN_DAY;
+                if (timeEndSupp[0] >= 24) timeEndSupp[0] -= 24;
+                timeEndSupp[1] = minutesEndSupp;
             }
 
             return timeEndSupp;
@@ -258,32 +237,40 @@ namespace ZC.TimeCalculator.Resources.Utils
             int[] timeSupp = new int[2];
             bool isNegativeBut0Hour = false;
 
-            // Delta of hours and minutes
-            timeSupp[0] = timeEndUser[0] - timeEndCalculated[0];
-            timeSupp[1] = timeEndUser[1] - timeEndCalculated[1];
+            // Converts hours into minutes sum it with minutes
+            int minutesUser = timeEndUser[0] * 60 + timeEndUser[1];
+            int minutesCalculated = timeEndCalculated[0] * 60 + timeEndCalculated[1];
 
-            // If delta of minutes is negative
-            if (timeSupp[1] < 0)
+            // Calculate the delta of the end time the user entered and the end time calculated
+            int deltaTime = minutesUser - minutesCalculated;
+            // If the delta time is positive
+            if (deltaTime >= 0)
             {
-                // If delta of hours is different from 0
-                if (timeSupp[0] != 0)
+                // While deltaTime is over 60
+                while (deltaTime >= 60)
                 {
-                    // Transform negative supp hour minutes into supp hours
-                    timeSupp[0]--;
-                    timeSupp[1] += MINUTES_IN_HOUR;
+                    // Removes 60 minutes and add an hour
+                    deltaTime -= 60;
+                    timeSupp[0]++;
                 }
-                // Else assign true to the 0 hours negative flag
-                else isNegativeBut0Hour = true;
-
-                // Multiply supp minutes by -1 to make the positive
-                timeSupp[1] *= -1;
+                // Assign the remaining minutes
+                timeSupp[1] = deltaTime; 
             }
-            // If delta of minutes is over an hour
-            else if (timeSupp[1] > MINUTES_IN_HOUR)
+            // Else -> Delta time is negative
+            else
             {
-                // Transform over hour supp minutes into supp hours
-                timeSupp[0]++;
-                timeSupp[1] -= MINUTES_IN_HOUR;
+                // If the delta time is between 60 and 0, the flag of negative hours but 0 is set to true
+                if (deltaTime > -60 && deltaTime < 0) 
+                    isNegativeBut0Hour = true;
+                // While deltaTime is under -60
+                while (deltaTime <= -60)
+                {
+                    // Add 60 minutes and removes an hour
+                    deltaTime += 60;
+                    timeSupp[0]--;
+                }
+                // Assign the remaining negatives minutes and make them absolute
+                timeSupp[1] = Math.Abs(deltaTime);
             }
 
             return (timeSupp, isNegativeBut0Hour);
