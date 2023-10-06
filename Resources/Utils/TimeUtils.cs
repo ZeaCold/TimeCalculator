@@ -20,12 +20,17 @@ namespace ZC.TimeCalculator.Resources.Utils
         /// On preview key down, only allow specified keys
         /// and write specfic character
         /// </summary>
-        /// <param name="sender">The textbox that triggered the event</param>
-        /// <param name="e">Args of the key event</param>
+        /// <param name="textBox">The textbox that triggered the event</param>
+        /// <param name="e">The event args</param>
+        /// <param name="textBoxes">The list of all textboxes focusable</param>
+        /// <param name="negativeTextBoxes">The list of all textboxes that support negatives values</param>
         public static void Field_PreviewKeyDown(TextBox textBox, KeyEventArgs e, List<TextBox> textBoxes, List<TextBox> negativeTextBoxes)
         {
             // Tag the event as handled
             e.Handled = true;
+
+            // If the textbox is on read-only mode, abort the event
+            if (textBox.IsReadOnly) return;
 
             // Defines the minimum limit of the caret index
             int limit = textBox.Text.StartsWith("-") ? 1 : 0;
