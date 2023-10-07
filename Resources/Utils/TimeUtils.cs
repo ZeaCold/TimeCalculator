@@ -200,8 +200,8 @@ namespace ZC.TimeCalculator.Resources.Utils
                 minutesEnd -= 60;
                 timeEnd[0]++;
             }
-            // If end time hours are over 24, removes them
-            if (timeEnd[0] >= 24) timeEnd[0] -= 24;
+            // While end time hours are over 24, removes them
+            while (timeEnd[0] >= 24) timeEnd[0] -= 24;
             // Assign remaining minutes to end time minutes
             timeEnd[1] = minutesEnd;
 
@@ -239,8 +239,8 @@ namespace ZC.TimeCalculator.Resources.Utils
                     minutesEndSupp -= 60;
                     timeEndSupp[0]++;
                 }
-                // If end supp time hours are over 24, removes them
-                if (timeEndSupp[0] >= 24) timeEndSupp[0] -= 24;
+                // While end supp time hours are over 24, removes them
+                while (timeEndSupp[0] >= 24) timeEndSupp[0] -= 24;
                 // Assign remaining minutes to end supp time minutes
                 timeEndSupp[1] = minutesEndSupp;
             }
