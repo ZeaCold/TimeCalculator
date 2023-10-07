@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace TimeCalculator
+namespace ZC.TimeCalculator
 {
     /// <summary>
     /// Interaction logic for App.xaml
