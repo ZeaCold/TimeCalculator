@@ -1,30 +1,191 @@
-﻿<Window x:Class="ZC.TimeCalculator.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ZC.TimeCalculator"
-        mc:Ignorable="d"
-        Title="Calculateur d'heures" Height="145" Width="425" Icon="/clock.png" ResizeMode="CanMinimize">
+﻿<Window
+    x:Class="ZC.TimeCalculator.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ZC.TimeCalculator"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Calculateur d'heures"
+    Width="425"
+    Height="176"
+    Icon="/Resources/Images/clock.png"
+    ResizeMode="CanMinimize"
+    mc:Ignorable="d">
     <Grid x:Name="mainGrid">
-        <Label x:Name="lblStart" Content="Arrivée" HorizontalAlignment="Left" Margin="9,10,0,0" VerticalAlignment="Top" Width="60" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
-        <Label x:Name="lblStartBreak" Content="Début Pause" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-        <TextBox x:Name="txtHStart" HorizontalAlignment="Left" Margin="74,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="FieldsWorkTime_TextChanged"/>
-        <TextBox x:Name="txtMStart" HorizontalAlignment="Left" Margin="129,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="FieldsWorkTime_TextChanged"/>
-        <TextBox x:Name="txtHStartPause" HorizontalAlignment="Left" Margin="295,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="FieldsWorkTime_TextChanged"/>
-        <TextBox x:Name="txtMStartPause" HorizontalAlignment="Left" Margin="350,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="FieldsWorkTime_TextChanged"/>
-        <Label x:Name="lblEndBreak" Content="Fin Pause" HorizontalAlignment="Left" Margin="9,41,0,0" VerticalAlignment="Top" Width="60" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
-        <TextBox x:Name="txtHEndPause" HorizontalAlignment="Left" Margin="74,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="FieldsWorkTime_TextChanged"/>
-        <TextBox x:Name="txtMEndPause" HorizontalAlignment="Left" Margin="129,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="FieldsWorkTime_TextChanged"/>
-        <Label x:Name="lblHSupp" Content="H. supp." HorizontalAlignment="Left" Margin="9,72,0,0" VerticalAlignment="Top" Width="60" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" ToolTip="Éditer l'heure de fin pour calculer les heures supplémentaires"/>
-        <TextBox x:Name="txtHSupp" HorizontalAlignment="Left" Margin="74,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="FieldsSupp_TextChanged"/>
-        <TextBox x:Name="txtMSupp" HorizontalAlignment="Left" Margin="129,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextChanged="FieldsSupp_TextChanged"/>
-        <Label x:Name="lblEnd" Content="Fin" HorizontalAlignment="Left" Margin="210,41,0,0" VerticalAlignment="Top" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" MouseDoubleClick="FieldsEnd_MouseDoubleClick" ToolTip="Double-click to allow edit"/>
-        <TextBox x:Name="txtHEnd" HorizontalAlignment="Left" Margin="295,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" MouseDoubleClick="FieldsEnd_MouseDoubleClick" TextChanged="FieldsEnd_TextChanged" ToolTip="Double-click to allow edit"/>
-        <TextBox x:Name="txtMEnd" HorizontalAlignment="Left" Margin="350,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" MouseDoubleClick="FieldsEnd_MouseDoubleClick" TextChanged="FieldsEnd_TextChanged" ToolTip="Double-click to allow edit"/>
-        <Label x:Name="lblEndSupp" Content="Fin (supp.)" HorizontalAlignment="Left" Margin="210,72,0,0" VerticalAlignment="Top" Width="80" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-        <TextBox x:Name="txtHEndSupp" HorizontalAlignment="Left" Margin="295,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
-        <TextBox x:Name="txtMEndSupp" HorizontalAlignment="Left" Margin="350,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <Label
+            x:Name="lblRequired"
+            Width="60"
+            Margin="9,10,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            Content="Requis" />
+        <TextBox
+            x:Name="txtTimeRequired"
+            Width="105"
+            Height="26"
+            Margin="74,10,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontFamily="Arial"
+            FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
+            Text="08:24"
+            TextChanged="FieldTimeRequired_TextChanged"
+            TextWrapping="Wrap" />
+        <Label
+            x:Name="lblStart"
+            Width="60"
+            Margin="9,41,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            Content="Arrivée" />
+        <TextBox
+            x:Name="txtTimeStart"
+            Width="105"
+            Height="26"
+            Margin="74,41,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontFamily="Arial"
+            FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
+            Text="__:__"
+            TextChanged="FieldsWorkTime_TextChanged"
+            TextWrapping="Wrap" />
+        <Label
+            x:Name="lblStartBreak"
+            Width="80"
+            Margin="210,41,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            Content="Début Pause" />
+        <TextBox
+            x:Name="txtTimeStartPause"
+            Width="105"
+            Height="26"
+            Margin="295,41,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontFamily="Arial"
+            FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
+            Text="__:__"
+            TextChanged="FieldsWorkTime_TextChanged"
+            TextWrapping="Wrap" />
+        <Label
+            x:Name="lblEndBreak"
+            Width="60"
+            Margin="9,72,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            Content="Fin Pause" />
+        <TextBox
+            x:Name="txtTimeEndPause"
+            Width="105"
+            Height="26"
+            Margin="74,72,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontFamily="Arial"
+            FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
+            Text="__:__"
+            TextChanged="FieldsWorkTime_TextChanged"
+            TextWrapping="Wrap" />
+        <Label
+            x:Name="lblEnd"
+            Width="80"
+            Margin="210,72,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            Content="Fin"
+            MouseDoubleClick="FieldEnd_MouseDoubleClick"
+            ToolTip="Double-click to toggle edit" />
+        <TextBox
+            x:Name="txtTimeEnd"
+            Width="105"
+            Height="26"
+            Margin="295,72,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontFamily="Arial"
+            FontSize="16"
+            IsReadOnly="True"
+            MouseDoubleClick="FieldEnd_MouseDoubleClick"
+            PreviewKeyDown="Field_PreviewKeyDown"
+            Text="__:__"
+            TextChanged="FieldsEnd_TextChanged"
+            TextWrapping="Wrap"
+            ToolTip="Double-click to toggle edit" />
+        <Label
+            x:Name="lblHSupp"
+            Width="60"
+            Margin="9,103,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            Content="H. supp."
+            ToolTip="Éditer l'heure de fin pour calculer les heures supplémentaires" />
+        <TextBox
+            x:Name="txtTimeSupp"
+            Width="105"
+            Height="26"
+            Margin="74,103,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontFamily="Arial"
+            FontSize="16"
+            PreviewKeyDown="Field_PreviewKeyDown"
+            Text="__:__"
+            TextChanged="FieldsSupp_TextChanged"
+            TextWrapping="Wrap" />
+        <Label
+            x:Name="lblEndSupp"
+            Width="80"
+            Margin="210,103,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            Content="Fin (supp.)" />
+        <TextBox
+            x:Name="txtTimeEndSupp"
+            Width="105"
+            Height="26"
+            Margin="295,103,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            FontFamily="Arial"
+            FontSize="16"
+            IsReadOnly="True"
+            PreviewKeyDown="Field_PreviewKeyDown"
+            Text="__:__"
+            TextWrapping="Wrap" />
 
     </Grid>
 </Window>
