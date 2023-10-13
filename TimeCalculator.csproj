@@ -63,6 +63,11 @@
     </ApplicationDefinition>
     <Compile Include="Resources\Extension\KeyExtension.cs" />
     <Compile Include="Resources\Extension\TextBoxExtension.cs" />
+    <Compile Include="Resources\Translation\AppTranslation.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppTranslation.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Utils\TimeUtils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -94,6 +99,11 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Translation\AppTranslation.fr-CH.resx" />
+    <EmbeddedResource Include="Resources\Translation\AppTranslation.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppTranslation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
