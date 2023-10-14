@@ -170,8 +170,11 @@ namespace ZC.TimeCalculator.Resources.Utils
 
             // If minutesMinimumEnd is over 24 hours, removes the over a day minutes
             if (minutesMinimumEnd >= MINUTES_IN_DAY) minutesMinimumEnd -= MINUTES_IN_DAY;
-            // Minimum end time is before the start break time
-            if (minutesMinimumEnd < minutesStartBreak)
+            // If the minimum end time minutes is lower than the start break time minutes or
+            // the minimum end time minutes are higher than the start break time minutes and start time minutes are higher than the start break time minutes
+            // and the minimum end time total minutes are lower than the total of minutes in a day
+            if (minutesMinimumEnd < minutesStartBreak || 
+                (minutesMinimumEnd > minutesStartBreak && minutesStart > minutesStartBreak && minutesRequired + minutesStart < MINUTES_IN_DAY))
             {
                 // Foreach 60 minutes, adds an hour and removes them
                 while (minutesMinimumEnd >= 60)
