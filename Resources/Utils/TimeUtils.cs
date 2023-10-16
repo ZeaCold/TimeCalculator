@@ -118,9 +118,24 @@ namespace ZC.TimeCalculator.Resources.Utils
             // If the key value has been set
             if (keyValue != "")
             {
-                // Insert the key value at the current caret position in a new string
-                string time = textBox.Text.Substring(0, caretPosition) + keyValue +
-                    textBox.Text.Substring(caretPosition + 1, textBox.Text.Length - (caretPosition + 1));
+                string time = "";
+                // Handle the parse int error
+                try
+                {
+                    // If the caret position is at 0 and the number entered is higher or equal than 2 or the caret position is at 1 and the first char is still an _
+                    if ((caretPosition == 0 && int.Parse(keyValue) >= 3) || (caretPosition == 1 && textBox.Text[0] == '_'))
+                    {
+                        // Insert the keyvalue with a 0 automatically
+                        time = "0" + keyValue + textBox.Text.Substring(2, textBox.Text.Length - 2);
+                        caretPosition++;
+                    }
+                }
+                catch (Exception) { }
+                // If time is still not defined
+                if (time == "")
+                    // Insert the key value at the current caret position in a new string
+                    time = textBox.Text.Substring(0, caretPosition) + keyValue +
+                        textBox.Text.Substring(caretPosition + 1, textBox.Text.Length - (caretPosition + 1));
                 // If the new time matches the default time regex
                 if (timeFormat.IsMatch(time))
                 {
