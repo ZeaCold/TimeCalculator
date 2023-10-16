@@ -38,7 +38,9 @@ namespace ZC.TimeCalculator
             set
             {
                 // Assign the value to timeEnd
-                timeEnd = value;
+                if (value[0] < 24 && value[0] >= 0 &&
+                    value[1] < 60 && value[1] >= 0)
+                    timeEnd = value;
 
                 // Display the result in 2 digits
                 txtTimeEnd.Text = timeEnd[0].ToString("D2") + ":" + timeEnd[1].ToString("D2");
