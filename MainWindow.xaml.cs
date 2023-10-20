@@ -15,7 +15,7 @@ namespace ZC.TimeCalculator
         const string DEFAULT_TEXT = "__:__";                // Constant value of the default text
 
         int[] timeStart = new int[2];                       // Start time in hours and minutes separated
-        int[] timeEnd = new int[2];                         // End time in hours and minutes separated
+        int[] _timeEnd = new int[2];                         // End time in hours and minutes separated
         int[] timeStartBreak = new int[2];                  // Start break time in hours and minutes separated
         int[] timeEndBreak = new int[2];                    // End break time in hours and minutes separated
         int[] timeSupp = new int[3];                        // Supp hours in hours and minutes separated
@@ -34,16 +34,16 @@ namespace ZC.TimeCalculator
         /// </summary>
         public int[] TimeEnd { 
             // Return the value of timeEnd
-            get => timeEnd;
+            get => _timeEnd;
             set
             {
                 // Assign the value to timeEnd
                 if (value[0] < 24 && value[0] >= 0 &&
                     value[1] < 60 && value[1] >= 0)
-                    timeEnd = value;
+                    _timeEnd = value;
 
                 // Display the result in 2 digits
-                txtTimeEnd.Text = timeEnd[0].ToString("D2") + ":" + timeEnd[1].ToString("D2");
+                txtTimeEnd.Text = _timeEnd[0].ToString("D2") + ":" + _timeEnd[1].ToString("D2");
             }
         }
 
