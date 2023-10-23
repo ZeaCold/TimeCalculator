@@ -15,7 +15,7 @@ namespace ZC.TimeCalculator
         const string DEFAULT_TEXT = "__:__";                // Constant value of the default text
 
         int[] timeStart = new int[2];                       // Start time in hours and minutes separated
-        int[] timeEnd = new int[2];                         // End time in hours and minutes separated
+        int[] _timeEnd = new int[2];                         // End time in hours and minutes separated
         int[] timeStartBreak = new int[2];                  // Start break time in hours and minutes separated
         int[] timeEndBreak = new int[2];                    // End break time in hours and minutes separated
         int[] timeSupp = new int[3];                        // Supp hours in hours and minutes separated
@@ -28,6 +28,24 @@ namespace ZC.TimeCalculator
 
         List<TextBox> textBoxes = new List<TextBox>();              // List of all textboxes in the app
         List<TextBox> negativeTextBoxes = new List<TextBox>();      // List of all textboxes that supports negative values
+
+        /// <summary>
+        /// Property that returns the value of timeEnd or assign it a value and change time end related text field
+        /// </summary>
+        public int[] TimeEnd { 
+            // Return the value of timeEnd
+            get => _timeEnd;
+            set
+            {
+                // Assign the value to timeEnd
+                if (value[0] < 24 && value[0] >= 0 &&
+                    value[1] < 60 && value[1] >= 0)
+                    _timeEnd = value;
+
+                // Display the result in 2 digits
+                txtTimeEnd.Text = _timeEnd[0].ToString("D2") + ":" + _timeEnd[1].ToString("D2");
+            }
+        }
 
         /// <summary>
         /// On preview key down, only allow specified keys
@@ -65,7 +83,7 @@ namespace ZC.TimeCalculator
                     timeFinishedFormat.IsMatch(txtTimeEndPause.Text))
 
                     // Start calculating end time
-                    timeEnd = TimeUtils.CalculateEnd(timeRequired, timeStart, timeStartBreak, timeEndBreak);
+                    TimeEnd = TimeUtils.CalculateEnd(timeRequired, timeStart, timeStartBreak, timeEndBreak);
             }
         }
 
@@ -86,7 +104,7 @@ namespace ZC.TimeCalculator
                 if (txtTimeEnd.IsReadOnly)
                 {
                     // Reset end time values to the calculated ones and h.supp to none
-                    txtTimeEnd.Text = timeEnd[0].ToString("D2") + ":" + timeEnd[1].ToString("D2");
+                    txtTimeEnd.Text = TimeEnd[0].ToString("D2") + ":" + TimeEnd[1].ToString("D2");
 
                     txtTimeSupp.Text = DEFAULT_TEXT;
 
@@ -115,7 +133,7 @@ namespace ZC.TimeCalculator
                 if (textBox.IsReadOnly) return;
 
                 // If end time was calculated and both end fields content are set
-                if (timeEnd[0] > 0 && timeEnd[1] > 0 && timeFinishedFormat.IsMatch(txtTimeEnd.Text))
+                if (TimeEnd[0] > 0 && TimeEnd[1] > 0 && timeFinishedFormat.IsMatch(txtTimeEnd.Text))
                 {
                     string[] endTime = txtTimeEnd.Text.Split(':');
                     int[] timeSuppUser = new int[2];
@@ -123,7 +141,7 @@ namespace ZC.TimeCalculator
                     timeSuppUser[0] = int.Parse(endTime[0]);
                     timeSuppUser[1] = int.Parse(endTime[1]);
 
-                    (int[] timeSupp, bool isNegativeBut0Hour) suppTime = TimeUtils.CalculateSuppTime(timeSuppUser, timeEnd);
+                    (int[] timeSupp, bool isNegativeBut0Hour) suppTime = TimeUtils.CalculateSuppTime(timeSuppUser, TimeEnd);
 
                     // Display the results in 2 digits
                     txtTimeSupp.Text = (suppTime.isNegativeBut0Hour ? "-" : "") + suppTime.timeSupp[0].ToString("D2") + ":" + suppTime.timeSupp[1].ToString("D2");
@@ -179,10 +197,7 @@ namespace ZC.TimeCalculator
                     timeEndBreak[1] = int.Parse(fieldEndBreak[1]);
 
                     // Start calculating end time
-                    timeEnd = TimeUtils.CalculateEnd(timeRequired, timeStart, timeStartBreak, timeEndBreak);
-
-                    // Display the result in 2 digits
-                    txtTimeEnd.Text = timeEnd[0].ToString("D2") + ":" + timeEnd[1].ToString("D2");
+                    TimeEnd = TimeUtils.CalculateEnd(timeRequired, timeStart, timeStartBreak, timeEndBreak);
                 }
             }
         }
@@ -211,7 +226,7 @@ namespace ZC.TimeCalculator
                         timeSupp[2] = txtTimeSupp.Text.StartsWith("-") ? 1 : 0;
 
                         // Start calculating supp end time
-                        timeEndSupp = TimeUtils.CalculateEndSupp(timeRequired, timeStart, timeEnd, timeSupp);
+                        timeEndSupp = TimeUtils.CalculateEndSupp(timeRequired, timeStart, TimeEnd, timeSupp);
 
                         // Display the supp end time
                         txtTimeEndSupp.Text = timeEndSupp[0].ToString("D2") + ":" + timeEndSupp[1].ToString("D2");
