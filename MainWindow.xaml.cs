@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
 using ZC.TimeCalculator.Resources.Utils;
-
 namespace ZC.TimeCalculator
 {
     /// <summary>
@@ -13,6 +16,16 @@ namespace ZC.TimeCalculator
     public partial class MainWindow : Window
     {
         const string DEFAULT_TEXT = "__:__";                // Constant value of the default text
+
+        int _minuteurHour = 0;
+        int _minuteurMinute = 0;
+        int _minuteurSecond = 0;
+        int[] _minuteurStartTime = new int[3];
+
+        double red = 255, green = 0, blue = 0;
+        double colorDiff = 1;
+
+        int tick = 100;
 
         int[] timeStart = new int[2];                       // Start time in hours and minutes separated
         int[] _timeEnd = new int[2];                         // End time in hours and minutes separated
@@ -29,10 +42,64 @@ namespace ZC.TimeCalculator
         List<TextBox> textBoxes = new List<TextBox>();              // List of all textboxes in the app
         List<TextBox> negativeTextBoxes = new List<TextBox>();      // List of all textboxes that supports negative values
 
+        Timer timer = new Timer(10);
+        bool isTimerRunning = false;
+
+        public int MinuteurHour
+        {
+            get => _minuteurHour;
+            set
+            {
+                if (value < 0) _minuteurHour = 23;
+                else if (value >= 24) _minuteurHour = 0;
+                else _minuteurHour = value;
+                Dispatcher.Invoke(() => lblMinuteurHour.Content = _minuteurHour.ToString("d2"));
+            }
+        }
+        public int MinuteurMinute
+        {
+            get => _minuteurMinute;
+            set
+            {
+                if (value < 0)
+                {
+                    _minuteurMinute = 59;
+                    MinuteurHour--;
+                }
+                else if (value >= 60)
+                {
+                    _minuteurMinute = 0;
+                    MinuteurHour++;
+                }
+                else _minuteurMinute = value;
+                Dispatcher.Invoke(() => lblMinuteurMinute.Content = _minuteurMinute.ToString("d2"));
+            }
+        }
+        public int MinuteurSecond
+        {
+            get => _minuteurSecond;
+            set
+            {
+                if (value < 0)
+                {
+                    _minuteurSecond = 59;
+                    MinuteurMinute--;
+                }
+                else if (value >= 60)
+                {
+                    _minuteurSecond = 0;
+                    MinuteurMinute++;
+                }
+                else _minuteurSecond = value;
+                Dispatcher.Invoke(() => lblMinuteurSecond.Content = _minuteurSecond.ToString("d2"));
+            }
+        }
+
         /// <summary>
         /// Property that returns the value of timeEnd or assign it a value and change time end related text field
         /// </summary>
-        public int[] TimeEnd { 
+        public int[] TimeEnd
+        {
             // Return the value of timeEnd
             get => _timeEnd;
             set
@@ -129,6 +196,7 @@ namespace ZC.TimeCalculator
             {
                 TextBox textBox = sender as TextBox;
 
+
                 // If textbox is read-only
                 if (textBox.IsReadOnly) return;
 
@@ -153,6 +221,8 @@ namespace ZC.TimeCalculator
         {
             InitializeComponent();
 
+            DataContext = MinuteurHour;
+
             componentInitialized = true;
 
             timeRequired[0] = 8;
@@ -162,12 +232,14 @@ namespace ZC.TimeCalculator
             txtTimeStart.Focus();
 
             // Get all the references of textboxes of the app into a list
-            foreach (var item in mainGrid.Children)
+            foreach (var item in gridTimeWork.Children)
                 // If the item type is of the TextBox type
                 if (item.GetType() == txtTimeStart.GetType())
                     textBoxes.Add(item as TextBox);
 
             negativeTextBoxes.Add(txtTimeSupp);
+
+            timer.Elapsed += TimerElapsed;
         }
 
         /// <summary>
@@ -232,6 +304,113 @@ namespace ZC.TimeCalculator
                         txtTimeEndSupp.Text = timeEndSupp[0].ToString("D2") + ":" + timeEndSupp[1].ToString("D2");
                     }
                 }
+            }
+        }
+
+        private void Label_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!isTimerRunning)
+            {
+                Label source = sender as Label;
+                int step = e.Delta > 0 ? 1 : -1;
+                switch (source.Name)
+                {
+                    case "lblMinuteurHour":
+                        MinuteurHour += step;
+                        break;
+                    case "lblMinuteurMinute":
+                        MinuteurMinute += step;
+                        break;
+                    case "lblMinuteurSecond":
+                        MinuteurSecond += step;
+                        break;
+                }
+            }
+        }
+
+        private void ButtonMinuteurStart_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button.Content.Equals("Start"))
+            {
+                red = 192;
+                green = 0;
+                isTimerRunning = true;
+                timer.Start();
+                pbMinuteur.Maximum = (MinuteurHour * 3600 + MinuteurMinute * 60 + MinuteurSecond) * 100;
+                colorDiff = 1 / (pbMinuteur.Maximum / 384);
+                pbMinuteur.Value = 0;
+                _minuteurStartTime[0] = MinuteurHour;
+                _minuteurStartTime[1] = MinuteurMinute;
+                _minuteurStartTime[2] = MinuteurSecond;
+                button.Content = "Stop";
+                btnMinuteurPause.Content = "Pause";
+                button.Width = 145;
+            }
+            else
+            {
+                isTimerRunning = false;
+                timer.Stop();
+                pbMinuteur.Value = 0;
+                button.Content = "Start";
+                button.Width = 200;
+                MinuteurHour = _minuteurStartTime[0];
+                MinuteurMinute = _minuteurStartTime[1];
+                MinuteurSecond = _minuteurStartTime[2];
+            }
+        }
+
+        private void TimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                pbMinuteur.Value++;
+
+                if (green < 192 && red >= 192) green += colorDiff;
+                else if (red > 0) red -= colorDiff;
+                if (green < 0) green = 0;
+                if (green > 255) green = 255;
+                if (red < 0) red = 0;
+                if (red > 255) red = 255;
+                pbMinuteur.Foreground = new SolidColorBrush(Color.FromRgb((byte)red, (byte)green, (byte)blue));
+
+                if (pbMinuteur.Value % tick == 0)
+                {
+                    MinuteurSecond--;
+                    if (pbMinuteur.Value == pbMinuteur.Maximum)
+                    {
+                        isTimerRunning = false;
+                        timer.Stop();
+                        MinuteurHour = _minuteurStartTime[0];
+                        MinuteurMinute = _minuteurStartTime[1];
+                        MinuteurSecond = _minuteurStartTime[2];
+                        btnMinuteurStart.Content = "Start"; 
+                        btnMinuteurStart.Width = 200; 
+                        btnMinuteurPause.Content = "Pause";
+                        ShowMessage("Timer reached Zero!");
+                        WindowState = WindowState.Normal;
+                        Topmost = true;
+                    }
+                }
+            });
+        }
+
+        private void ShowMessage(string message) => Dispatcher.Invoke(() => lblMinuteurMessage.Content = message);
+
+        private void btnMinuteurPause_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button.Content.Equals("Restart"))
+            {
+                isTimerRunning = true;
+                timer.Start();
+                button.Content = "Pause";
+            }
+            else
+            {
+                isTimerRunning = false;
+                timer.Stop();
+                button.Content = "Restart";
             }
         }
     }
