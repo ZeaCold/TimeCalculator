@@ -307,6 +307,11 @@ namespace ZC.TimeCalculator
             }
         }
 
+        /// <summary>
+        /// On mouse wheel rotation, increase or decrease minuteur time
+        /// </summary>
+        /// <param name="sender">Label containing the hour/minute/second time</param>
+        /// <param name="e">Event args of the mouse wheel rotation action</param>
         private void Label_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (!isTimerRunning)
@@ -328,6 +333,11 @@ namespace ZC.TimeCalculator
             }
         }
 
+        /// <summary>
+        /// On click, starts or stops the timer
+        /// </summary>
+        /// <param name="sender">Button used to start the timer</param>
+        /// <param name="e">Not used</param>
         private void ButtonMinuteurStart_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
@@ -360,6 +370,11 @@ namespace ZC.TimeCalculator
             }
         }
 
+        /// <summary>
+        /// On time elapsed, decrease the second of the timer and increase/change the color of the progress bar
+        /// </summary>
+        /// <param name="sender">Not used</param>
+        /// <param name="e">Not used</param>
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             Dispatcher.Invoke(() =>
@@ -395,8 +410,17 @@ namespace ZC.TimeCalculator
             });
         }
 
+        /// <summary>
+        /// Show the message in the dedicated label
+        /// </summary>
+        /// <param name="message">Message to display in the label</param>
         private void ShowMessage(string message) => Dispatcher.Invoke(() => lblMinuteurMessage.Content = message);
 
+        /// <summary>
+        /// On click, pause or re-run the timer
+        /// </summary>
+        /// <param name="sender">The button used to pause the timer</param>
+        /// <param name="e">Not used</param>
         private void btnMinuteurPause_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
