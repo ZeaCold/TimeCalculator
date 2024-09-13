@@ -193,8 +193,70 @@
                         TextWrapping="Wrap" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Converter" IsEnabled="False">
-                <Grid/>
+            <TabItem Header="Converter">
+                <Grid>
+                    <ComboBox
+                        x:Name="cmbConvUnit1"
+                        Width="120"
+                        Height="26"
+                        Margin="10,10,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        SelectionChanged="UnitConv1_SelectionChanged" />
+                    <TextBox
+                        x:Name="txtConvTime1"
+                        Width="105"
+                        Height="26"
+                        Margin="135,10,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        FontFamily="Arial"
+                        FontSize="16"
+                        PreviewKeyDown="ConvField_PreviewKeyDown"
+                        Text="_:_"
+                        TextChanged="ConvTime_TextChanged"
+                        TextWrapping="Wrap" />
+                    <ComboBox
+                        x:Name="cmbConvUnit2"
+                        Width="120"
+                        Height="26"
+                        Margin="10,41,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        SelectionChanged="UnitConv2_SelectionChanged" />
+                    <TextBox
+                        x:Name="txtConvTime2"
+                        Width="105"
+                        Height="26"
+                        Margin="135,41,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        FontFamily="Arial"
+                        FontSize="16"
+                        IsReadOnly="True"
+                        PreviewKeyDown="Field_PreviewKeyDown"
+                        TextChanged="FieldsWorkTime_TextChanged"
+                        TextWrapping="Wrap" />
+                    <TextBox
+                        x:Name="txtConvTimeSpecification"
+                        Width="105"
+                        Height="26"
+                        Margin="245,41,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        FontFamily="Arial"
+                        FontSize="16"
+                        PreviewKeyDown="Field_PreviewKeyDown"
+                        Text="08:24"
+                        TextChanged="FieldsWorkTime_TextChanged"
+                        TextWrapping="Wrap" />
+                </Grid>
             </TabItem>
         </TabControl>
 

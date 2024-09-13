@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using ZC.TimeCalculator.Resources.Extension;
 using ZC.TimeCalculator.Resources.Utils;
 namespace ZC.TimeCalculator
 {
@@ -25,9 +26,12 @@ namespace ZC.TimeCalculator
         int[] timeEndSupp = new int[2];                     // End time calculated with supp time
         int[] timeRequired = new int[2];                    // Work time required in hours and minutes separated
 
+        List<string> unitsForConvertion = new() { "Hour", "Workday", "Day" };
+
         bool componentInitialized = false;                  // If the component are initialized or not
 
         Regex timeFinishedFormat = new Regex("(-?)([01][0-9]|2[0-3]):([0-5][0-9])");        // Regex for the date format when entierly written
+        Regex timeFormat = new Regex("[0-9]+:[0-5][0-9]");
 
         List<TextBox> textBoxes = new List<TextBox>();              // List of all textboxes in the app
         List<TextBox> negativeTextBoxes = new List<TextBox>();      // List of all textboxes that supports negative values
@@ -61,7 +65,8 @@ namespace ZC.TimeCalculator
         {
             TextBox textBox = sender as TextBox;
 
-            TimeUtils.Field_PreviewKeyDown(textBox, e, textBoxes, negativeTextBoxes);
+            if (textBox.Parent.Equals(gridTimeWork))
+                TimeUtils.Field_PreviewKeyDown(textBox, e, textBoxes, negativeTextBoxes);
         }
 
         /// <summary>
@@ -158,6 +163,12 @@ namespace ZC.TimeCalculator
         {
             InitializeComponent();
 
+            cmbConvUnit1.ItemsSource = unitsForConvertion;
+            cmbConvUnit1.SelectedIndex = 0;
+
+            cmbConvUnit2.ItemsSource = unitsForConvertion;
+            cmbConvUnit2.SelectedIndex = 1;
+
             componentInitialized = true;
 
             timeRequired[0] = 8;
@@ -238,6 +249,119 @@ namespace ZC.TimeCalculator
                     }
                 }
             }
+        }
+
+        private void UnitConv1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+
+            if (comboBox.SelectedItem.Equals(unitsForConvertion[1]))
+            {
+                txtConvTimeSpecification.Visibility = Visibility.Visible;
+                txtConvTimeSpecification.Margin = new Thickness(txtConvTimeSpecification.Margin.Left, comboBox.Margin.Top, txtConvTimeSpecification.Margin.Right, txtConvTimeSpecification.Margin.Bottom);
+            }
+            else if (cmbConvUnit1.SelectedIndex != 1)
+                txtConvTimeSpecification.Visibility = Visibility.Collapsed;
+
+            if (!comboBox.SelectedItem.Equals("Hour"))
+                txtConvTime1.Text = "";
+            else
+                txtConvTime1.Text = "_:_";
+
+            if (cmbConvUnit1.SelectedIndex.Equals(cmbConvUnit2.SelectedIndex))
+                cmbConvUnit2.SelectedIndex = cmbConvUnit2.SelectedIndex != 0 ? 0 : 1;
+        }
+
+        private void UnitConv2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+
+            if (comboBox.SelectedItem.Equals(unitsForConvertion[1]))
+            {
+                txtConvTimeSpecification.Visibility = Visibility.Visible;
+                txtConvTimeSpecification.Margin = new Thickness(txtConvTimeSpecification.Margin.Left, comboBox.Margin.Top, txtConvTimeSpecification.Margin.Right, txtConvTimeSpecification.Margin.Bottom);
+            }
+            else if (cmbConvUnit1.SelectedIndex != 1)
+                txtConvTimeSpecification.Visibility = Visibility.Collapsed;
+
+            if (cmbConvUnit2.SelectedIndex.Equals(cmbConvUnit1.SelectedIndex))
+                cmbConvUnit1.SelectedIndex = cmbConvUnit1.SelectedIndex != 0 ? 0 : 1;
+        }
+
+        private void Convert()
+        {
+            if (cmbConvUnit1.SelectedIndex == 0 && cmbConvUnit2.SelectedIndex == 1)
+            {
+                int[] time = new int[2];
+                string[] splittedValue = txtConvTime1.Text.Split(':');
+                time[0] = int.Parse(splittedValue[0]);
+                time[1] = int.Parse(splittedValue[1]);
+                double minutes = TimeInMinutes(time);
+
+                int[] workTime = new int[2];
+                splittedValue = txtConvTimeSpecification.Text.Split(':');
+                workTime[0] = int.Parse(splittedValue[0]);
+                workTime[1] = int.Parse(splittedValue[1]);
+                double workMinutes = TimeInMinutes(workTime);
+
+                txtConvTime2.Text = (minutes / workMinutes).ToString("f3");
+            }
+            else if (cmbConvUnit1.SelectedIndex == 1 && cmbConvUnit2.SelectedIndex == 0)
+            {
+                int days = int.Parse(txtConvTime1.Text);
+
+                int[] workTime = new int[2];
+                string[] splittedValue = txtConvTimeSpecification.Text.Split(':');
+                workTime[0] = int.Parse(splittedValue[0]);
+                workTime[1] = int.Parse(splittedValue[1]);
+                int workMinutes = TimeInMinutes(workTime);
+
+                double minutes = days * workMinutes;
+
+
+                int hour = (int)Math.Floor(minutes / TimeUtils.MINUTES_IN_HOUR);
+                int minute = (int)Math.Floor(minutes % TimeUtils.MINUTES_IN_HOUR);
+                txtConvTime2.Text = hour.ToString("D2") + ":" + minute.ToString("D2");
+            }
+        }
+
+        private int TimeInMinutes(int[] time) => time[0] * 60 + time[1];
+        private int DayInMinutes(int day) => day * TimeUtils.MINUTES_IN_DAY;
+
+        private void ConvField_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+
+            Regex digitKeyRegex = new("D[0-9]");
+
+            if (e.Key.IsDigit())
+            {
+                if (txtConvTime1.Text[txtConvTime1.CaretIndex].Equals('_'))
+                {
+                    txtConvTime1.Text = txtConvTime1.Text.Substring(0, txtConvTime1.CaretIndex) 
+                        + e.Key.ToString().Substring(e.Key.ToString().Length - 1, 1) 
+                        + txtConvTime1.Text.Substring(txtConvTime1.CaretIndex + 1);
+                    txtConvTime1.CaretIndex++;
+                } else
+                {
+                    txtConvTime1.Text = txtConvTime1.Text.Substring(0, txtConvTime1.CaretIndex)
+                        + e.Key.ToString().Substring(e.Key.ToString().Length - 1, 1)
+                        + txtConvTime1.Text.Substring(txtConvTime1.CaretIndex);
+                    txtConvTime1.CaretIndex+=2;
+                }
+            }
+        }
+
+        private void ConvTime_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!componentInitialized) return;
+
+            int temp;
+
+            if (cmbConvUnit1.SelectedItem.Equals("Hour") && timeFormat.IsMatch(txtConvTime1.Text))
+                Convert();
+            else if (!cmbConvUnit1.SelectedItem.Equals("Hour") && int.TryParse(txtConvTime1.Text, out temp))
+                Convert();
         }
     }
 }
