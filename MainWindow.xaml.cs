@@ -1,10 +1,13 @@
+﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
 using ZC.TimeCalculator.Resources.Utils;
-
 namespace ZC.TimeCalculator
 {
     /// <summary>
@@ -15,14 +18,14 @@ namespace ZC.TimeCalculator
         const string DEFAULT_TEXT = "__:__";                // Constant value of the default text
 
         int[] timeStart = new int[2];                       // Start time in hours and minutes separated
-        int[] _timeEnd = new int[2];                         // End time in hours and minutes separated
+        int[] _timeEnd = new int[2];                        // End time in hours and minutes separated
         int[] timeStartBreak = new int[2];                  // Start break time in hours and minutes separated
         int[] timeEndBreak = new int[2];                    // End break time in hours and minutes separated
         int[] timeSupp = new int[3];                        // Supp hours in hours and minutes separated
         int[] timeEndSupp = new int[2];                     // End time calculated with supp time
         int[] timeRequired = new int[2];                    // Work time required in hours and minutes separated
 
-        bool componentInitialized = false;                  // Contains if the components are already initialized
+        bool componentInitialized = false;                  // If the component are initialized or not
 
         Regex timeFinishedFormat = new Regex("(-?)([01][0-9]|2[0-3]):([0-5][0-9])");        // Regex for the date format when entierly written
 
@@ -32,7 +35,8 @@ namespace ZC.TimeCalculator
         /// <summary>
         /// Property that returns the value of timeEnd or assign it a value and change time end related text field
         /// </summary>
-        public int[] TimeEnd { 
+        public int[] TimeEnd
+        {
             // Return the value of timeEnd
             get => _timeEnd;
             set
@@ -129,6 +133,7 @@ namespace ZC.TimeCalculator
             {
                 TextBox textBox = sender as TextBox;
 
+
                 // If textbox is read-only
                 if (textBox.IsReadOnly) return;
 
@@ -162,7 +167,7 @@ namespace ZC.TimeCalculator
             txtTimeStart.Focus();
 
             // Get all the references of textboxes of the app into a list
-            foreach (var item in mainGrid.Children)
+            foreach (var item in gridTimeWork.Children)
                 // If the item type is of the TextBox type
                 if (item.GetType() == txtTimeStart.GetType())
                     textBoxes.Add(item as TextBox);
